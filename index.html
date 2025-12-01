@@ -2380,6 +2380,7 @@ curl -s -X GET "https://ayush-terminology-server.onrender.com/api/expand/namaste
                         options = {
                             method: 'POST',
                             headers: {
+                                'Authorization': `Bearer ${tokenToNamaste}`,
                                 'Content-Type': 'application/json'
                             },
                             body: bundleBody
@@ -2467,3 +2468,4 @@ curl -s -X GET "https://ayush-terminology-server.onrender.com/api/expand/namaste
     </script>
 </body>
 </html>
+
