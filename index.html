@@ -2290,153 +2290,161 @@ curl -s -X GET "https://ayush-terminology-server.onrender.com/api/expand/namaste
             hljs.highlightAll();
         });
 
-        // API Testing Functions
-        async function testEndpoint(event, endpointId) {
-            event.preventDefault();
-            
-            const responsePanel = document.getElementById(`response-${endpointId}`);
-            const statusBadge = document.getElementById(`status-${endpointId}`);
-            const timeBadge = document.getElementById(`time-${endpointId}`);
-            const responseBody = document.getElementById(`response-body-${endpointId}`);
-            const submitBtn = event.target.querySelector('button[type="submit"]');
-            
-            // Disable button
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Sending...';
-            
-            const startTime = Date.now();
-            
-            try {
-                let url, options;
+       // API Testing Functions
+async function testEndpoint(event, endpointId) {
+    event.preventDefault();
+    
+    const responsePanel = document.getElementById(`response-${endpointId}`);
+    const statusBadge = document.getElementById(`status-${endpointId}`);
+    const timeBadge = document.getElementById(`time-${endpointId}`);
+    const responseBody = document.getElementById(`response-body-${endpointId}`);
+    const submitBtn = event.target.querySelector('button[type="submit"]');
+    
+    // Disable button
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending...';
+    
+    const startTime = Date.now();
+    
+    try {
+        let url, options;
+        
+        switch(endpointId) {
+            case 'auth':
+                url = `${BASE_URL}/api/abha/mock-abha/token`;
+                const authBody = document.getElementById('auth-body').value;
+                options = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: authBody
+                };
+                break;
                 
-                switch(endpointId) {
-                    case 'auth':
-                        url = `${BASE_URL}/api/abha/mock-abha/token`;
-                        const authBody = document.getElementById('auth-body').value;
-                        options = {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: authBody
-                        };
-                        break;
-                        
-                    case 'expand-namaste':
-                        const tokenNamaste = document.getElementById('token-expand-namaste').value;
-                        const queryNamaste = document.getElementById('query-expand-namaste').value;
-                        url = `${BASE_URL}/api/expand/namaste?q=${encodeURIComponent(queryNamaste)}`;
-                        options = {
-                            method: 'GET',
-                            headers: {
-                                'Authorization': `Bearer ${tokenNamaste}`
-                            }
-                        };
-                        break;
-                        
-                    case 'expand-icdtm2':
-                        const tokenIcd = document.getElementById('token-expand-icdtm2').value;
-                        const queryIcd = document.getElementById('query-expand-icdtm2').value;
-                        url = `${BASE_URL}/api/expand/icdtm2?q=${encodeURIComponent(queryIcd)}`;
-                        options = {
-                            method: 'GET',
-                            headers: {
-                                'Authorization': `Bearer ${tokenIcd}`
-                            }
-                        };
-                        break;
-                        
-                    case 'translate-to-icdtm2':
-                        const tokenToIcd = document.getElementById('token-translate-to-icdtm2').value;
-                        const bodyToIcd = document.getElementById('body-translate-to-icdtm2').value;
-                        url = `${BASE_URL}/api/translate/to-icdtm2`;
-                        options = {
-                            method: 'POST',
-                            headers: {
-                                'Authorization': `Bearer ${tokenToIcd}`,
-                                'Content-Type': 'application/json'
-                            },
-                            body: bodyToIcd
-                        };
-                        break;
-                        
-                    case 'translate-to-namaste':
-                        const tokenToNamaste = document.getElementById('token-translate-to-namaste').value;
-                        const bodyToNamaste = document.getElementById('body-translate-to-namaste').value;
-                        url = `${BASE_URL}/api/translate/to-namaste`;
-                        options = {
-                            method: 'POST',
-                            headers: {
-                                'Authorization': `Bearer ${tokenToNamaste}`,
-                                'Content-Type': 'application/json'
-                            },
-                            body: bodyToNamaste
-                        };
-                        break;
-                        
-                    case 'bundle-upload':
-                        const bundleBody = document.getElementById('body-bundle-upload').value;
-                        url = `${BASE_URL}/api/bundle/bundle_upload`;
-                        options = {
-                            method: 'POST',
-                            headers: {
-                                'Authorization': `Bearer ${tokenToNamaste}`,
-                                'Content-Type': 'application/json'
-                            },
-                            body: bundleBody
-                        };
-                        break;
-                }
-                
-                const response = await fetch(url, options);
-                const endTime = Date.now();
-                const responseTime = endTime - startTime;
-                
-                const data = await response.json();
-                
-                // Update UI
-                responsePanel.classList.add('show');
-                
-                if (response.ok) {
-                    statusBadge.textContent = `${response.status} ${response.statusText}`;
-                    statusBadge.className = 'status-badge status-success';
-                    
-                    // Store token if this is auth endpoint
-                    if (endpointId === 'auth' && data.token) {
-                        // Auto-fill token in other forms
-                        document.querySelectorAll('input[id^="token-"]').forEach(input => {
-                            if (!input.value) {
-                                input.value = data.token;
-                            }
-                        });
+            case 'expand-namaste':
+                const tokenNamaste = document.getElementById('token-expand-namaste').value;
+                const queryNamaste = document.getElementById('query-expand-namaste').value;
+                url = `${BASE_URL}/api/expand/namaste?q=${encodeURIComponent(queryNamaste)}`;
+                options = {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': tokenNamaste.startsWith('Bearer ') ? tokenNamaste : `Bearer ${tokenNamaste}`
                     }
-                } else {
-                    statusBadge.textContent = `${response.status} ${response.statusText}`;
-                    statusBadge.className = 'status-badge status-error';
-                }
+                };
+                break;
                 
-                timeBadge.textContent = `Response time: ${responseTime}ms`;
-                responseBody.textContent = JSON.stringify(data, null, 2);
+            case 'expand-icdtm2':
+                const tokenIcd = document.getElementById('token-expand-icdtm2').value;
+                const queryIcd = document.getElementById('query-expand-icdtm2').value;
+                url = `${BASE_URL}/api/expand/icdtm2?q=${encodeURIComponent(queryIcd)}`;
+                options = {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': tokenIcd.startsWith('Bearer ') ? tokenIcd : `Bearer ${tokenIcd}`
+                    }
+                };
+                break;
                 
-                // Re-highlight
-                hljs.highlightElement(responseBody);
+            case 'translate-to-icdtm2':
+                const tokenToIcd = document.getElementById('token-translate-to-icdtm2').value;
+                const bodyToIcd = document.getElementById('body-translate-to-icdtm2').value;
+                url = `${BASE_URL}/api/translate/to-icdtm2`;
+                options = {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': tokenToIcd.startsWith('Bearer ') ? tokenToIcd : `Bearer ${tokenToIcd}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: bodyToIcd
+                };
+                break;
                 
-            } catch (error) {
-                responsePanel.classList.add('show');
-                statusBadge.textContent = 'Error';
-                statusBadge.className = 'status-badge status-error';
-                timeBadge.textContent = '';
-                responseBody.textContent = JSON.stringify({
-                    error: error.message,
-                    note: 'This could be a CORS error or network issue. The API may need to be configured to allow requests from this origin.'
-                }, null, 2);
+            case 'translate-to-namaste':
+                const tokenToNamaste = document.getElementById('token-translate-to-namaste').value;
+                const bodyToNamaste = document.getElementById('body-translate-to-namaste').value;
+                url = `${BASE_URL}/api/translate/to-namaste`;
+                options = {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': tokenToNamaste.startsWith('Bearer ') ? tokenToNamaste : `Bearer ${tokenToNamaste}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: bodyToNamaste
+                };
+                break;
                 
-                hljs.highlightElement(responseBody);
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Send Request';
-            }
+            case 'bundle-upload':
+                const bundleBody = document.getElementById('body-bundle-upload').value;
+                // Get token from any of the token fields or use the first available
+                const tokenBundle = 
+                    document.getElementById('token-translate-to-namaste')?.value ||
+                    document.getElementById('token-translate-to-icdtm2')?.value ||
+                    document.getElementById('token-expand-namaste')?.value ||
+                    document.getElementById('token-expand-icdtm2')?.value ||
+                    '';
+                
+                url = `${BASE_URL}/api/bundle/bundle_upload`;
+                options = {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': tokenBundle.startsWith('Bearer ') ? tokenBundle : `Bearer ${tokenBundle}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: bundleBody
+                };
+                break;
         }
+        
+        const response = await fetch(url, options);
+        const endTime = Date.now();
+        const responseTime = endTime - startTime;
+        
+        const data = await response.json();
+        
+        // Update UI
+        responsePanel.classList.add('show');
+        
+        if (response.ok) {
+            statusBadge.textContent = `${response.status} ${response.statusText}`;
+            statusBadge.className = 'status-badge status-success';
+            
+            // Store token if this is auth endpoint
+            if (endpointId === 'auth' && data.token) {
+                // Auto-fill token in other forms
+                document.querySelectorAll('input[id^="token-"]').forEach(input => {
+                    if (!input.value) {
+                        input.value = data.token;
+                    }
+                });
+            }
+        } else {
+            statusBadge.textContent = `${response.status} ${response.statusText}`;
+            statusBadge.className = 'status-badge status-error';
+        }
+        
+        timeBadge.textContent = `Response time: ${responseTime}ms`;
+        responseBody.textContent = JSON.stringify(data, null, 2);
+        
+        // Re-highlight
+        hljs.highlightElement(responseBody);
+        
+    } catch (error) {
+        responsePanel.classList.add('show');
+        statusBadge.textContent = 'Error';
+        statusBadge.className = 'status-badge status-error';
+        timeBadge.textContent = '';
+        responseBody.textContent = JSON.stringify({
+            error: error.message,
+            note: 'This could be a CORS error or network issue. The API may need to be configured to allow requests from this origin.'
+        }, null, 2);
+        
+        hljs.highlightElement(responseBody);
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send Request';
+    }
+}
 
         // Intersection Observer for active nav highlighting
         const sections = document.querySelectorAll('.section, .hero');
@@ -2468,4 +2476,5 @@ curl -s -X GET "https://ayush-terminology-server.onrender.com/api/expand/namaste
     </script>
 </body>
 </html>
+
 
