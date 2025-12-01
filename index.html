@@ -906,7 +906,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</code></pre>
                             
                             <div class="form-group">
                                 <label class="form-label">Query (q)</label>
-                                <input type="text" class="form-input" id="query-expand-icdtm2" placeholder="e.g., headache" value="headache">
+                                <input type="text" class="form-input" id="query-expand-icdtm2" placeholder="e.g., headache" value="fever">
                             </div>
                             
                             <button type="submit" class="btn-test">Send Request</button>
@@ -1105,67 +1105,35 @@ Content-Type: application/json</code></pre>
                     <div class="code-label">Request Body (Example FHIR Bundle)</div>
                     <div class="code-block">
                         <pre><code class="language-json">{
-  "resourceType": "Bundle",
-  "type": "transaction",
-  "entry": [
+  "abhaId": "26-1234-5678-9012",
+  "encounterDetail": {
+    "encounterId": "ENC-987654321",
+    "encounterDate": "2025-01-24T10:30:00Z",
+    "providerName": "Dr. Mehta",
+    "facilityName": "AYUSH Wellness Clinic",
+    "notes": "Patient visited for headache and fatigue"
+  },
+  "problemList": [
     {
-      "fullUrl": "urn:uuid:patient-1",
-      "resource": {
-        "resourceType": "Patient",
-        "id": "patient-1",
-        "identifier": [
-          {
-            "system": "http://abha.in",
-            "value": "12345678901234"
-          }
-        ],
-        "name": [
-          {
-            "use": "official",
-            "text": "Ashwin Kumar",
-            "family": "Kumar",
-            "given": ["Ashwin"]
-          }
-        ],
-        "gender": "male",
-        "birthDate": "2001-10-10",
-        "telecom": [
-          {
-            "system": "phone",
-            "value": "9123456789",
-            "use": "mobile"
-          }
-        ]
-      },
-      "request": {
-        "method": "POST",
-        "url": "Patient"
-      }
+      "problemCode": "TM2-316699522",
+      "problemName": "Heaviness of head disorder (TM2)",
+      "onsetDate": "2025-01-20"
     },
     {
-      "fullUrl": "urn:uuid:observation-1",
-      "resource": {
-        "resourceType": "Observation",
-        "id": "observation-1",
-        "status": "final",
-        "code": {
-          "coding": [
-            {
-              "system": "http://namaste.ayush.gov.in",
-              "code": "M-39",
-              "display": "Fatq"
-            }
-          ]
-        },
-        "subject": {
-          "reference": "urn:uuid:patient-1"
-        },
-        "effectiveDateTime": "2025-12-01T10:30:00Z"
-      },
-      "request": {
-        "method": "POST",
-        "url": "Observation"
-      }
+      "problemCode": "TM2-1676838320",
+      "problemName": "Infantile hiccough disorder (TM2)",
+      "onsetDate": "2025-01-22"
+    }
+  ],
+  "namaste_code": "NAMASTE-A01",
+  "ICD_TM2_code": "316699522",
+  "consentMetaData": [
+    {
+      "consentId": "CNS-55667788",
+      "timestamp": "2025-01-24T10:35:00Z",
+      "purpose": "Care Management",
+      "consentFlag": true,
+      "signedBy": "26-1234-5678-9012"
     }
   ]
 }</code></pre>
@@ -1188,42 +1156,35 @@ Content-Type: application/json</code></pre>
                             <div class="form-group">
                                 <label class="form-label">Request Body (JSON)</label>
                                 <textarea class="form-textarea" id="body-bundle-upload" style="min-height: 300px;">{
-  "resourceType": "Bundle",
-  "type": "transaction",
-  "entry": [
+  "abhaId": "26-1234-5678-9012",
+  "encounterDetail": {
+    "encounterId": "ENC-987654321",
+    "encounterDate": "2025-01-24T10:30:00Z",
+    "providerName": "Dr. Mehta",
+    "facilityName": "AYUSH Wellness Clinic",
+    "notes": "Patient visited for headache and fatigue"
+  },
+  "problemList": [
     {
-      "fullUrl": "urn:uuid:patient-1",
-      "resource": {
-        "resourceType": "Patient",
-        "id": "patient-1",
-        "identifier": [
-          {
-            "system": "http://abha.in",
-            "value": "12345678901234"
-          }
-        ],
-        "name": [
-          {
-            "use": "official",
-            "text": "Ashwin Kumar",
-            "family": "Kumar",
-            "given": ["Ashwin"]
-          }
-        ],
-        "gender": "male",
-        "birthDate": "2001-10-10",
-        "telecom": [
-          {
-            "system": "phone",
-            "value": "9123456789",
-            "use": "mobile"
-          }
-        ]
-      },
-      "request": {
-        "method": "POST",
-        "url": "Patient"
-      }
+      "problemCode": "TM2-316699522",
+      "problemName": "Heaviness of head disorder (TM2)",
+      "onsetDate": "2025-01-20"
+    },
+    {
+      "problemCode": "TM2-1676838320",
+      "problemName": "Infantile hiccough disorder (TM2)",
+      "onsetDate": "2025-01-22"
+    }
+  ],
+  "namaste_code": "NAMASTE-A01",
+  "ICD_TM2_code": "316699522",
+  "consentMetaData": [
+    {
+      "consentId": "CNS-55667788",
+      "timestamp": "2025-01-24T10:35:00Z",
+      "purpose": "Care Management",
+      "consentFlag": true,
+      "signedBy": "26-1234-5678-9012"
     }
   ]
 }</textarea>
