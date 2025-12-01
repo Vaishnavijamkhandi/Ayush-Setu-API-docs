@@ -1,0 +1,2508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AYUSH Terminology Server – API Documentation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8f9fa;
+            --bg-tertiary: #e9ecef;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --border-color: #dee2e6;
+            --accent-color: #0066cc;
+            --accent-hover: #0052a3;
+            --sidebar-width: 280px;
+            --success-color: #28a745;
+            --error-color: #dc3545;
+            --warning-color: #ffc107;
+            --code-bg: #282c34;
+            --shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #242424;
+            --bg-tertiary: #2d2d2d;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --border-color: #404040;
+            --code-bg: #1e1e1e;
+            --shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+            transition: transform 0.3s;
+        }
+
+        .sidebar-header {
+            padding: 24px 20px;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            background: var(--bg-secondary);
+            z-index: 10;
+        }
+
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 24px;
+            background: var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: var(--accent-color);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(24px);
+        }
+
+        .sidebar-nav {
+            padding: 12px 0;
+        }
+
+        .nav-item {
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background 0.2s;
+            color: var(--text-primary);
+            text-decoration: none;
+            display: block;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .nav-item.active {
+            background: var(--bg-tertiary);
+            border-left-color: var(--accent-color);
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+
+        .nav-section {
+            padding: 16px 20px 8px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 40px 60px;
+            max-width: 1200px;
+        }
+
+        .hero {
+            margin-bottom: 60px;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #0066cc, #00a8ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
+
+        .base-url {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 20px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+
+        .quick-links {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .section {
+            margin-bottom: 80px;
+            scroll-margin-top: 20px;
+        }
+
+        .section-title {
+            font-size: 32px;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .endpoint {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 32px;
+            box-shadow: var(--shadow);
+        }
+
+        .endpoint-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .method-badge {
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .method-get {
+            background: #28a745;
+            color: white;
+        }
+
+        .method-post {
+            background: #0066cc;
+            color: white;
+        }
+
+        .endpoint-path {
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .endpoint-description {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .code-block {
+            background: var(--code-bg);
+            border-radius: 6px;
+            padding: 16px;
+            margin: 12px 0;
+            overflow-x: auto;
+        }
+
+        .code-block pre {
+            margin: 0;
+        }
+
+        .code-block code {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .code-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Language Selector */
+        .language-selector {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 32px 0 24px;
+            padding: 16px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .language-selector label {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .language-dropdown {
+            padding: 10px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            min-width: 200px;
+            transition: all 0.2s;
+        }
+
+        .language-dropdown:hover {
+            border-color: var(--accent-color);
+        }
+
+        .language-dropdown:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        .code-example {
+            display: none;
+        }
+
+        .code-example.active {
+            display: block;
+        }
+
+        /* Try It Out Panel */
+        .try-it-out {
+            background: var(--bg-primary);
+            border: 2px solid var(--accent-color);
+            border-radius: 8px;
+            padding: 24px;
+            margin-top: 24px;
+        }
+
+        .try-it-out-header {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .btn-test {
+            background: var(--accent-color);
+            color: white;
+            padding: 12px 32px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-test:hover {
+            background: var(--accent-hover);
+        }
+
+        .btn-test:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .response-panel {
+            margin-top: 24px;
+            display: none;
+        }
+
+        .response-panel.show {
+            display: block;
+        }
+
+        .response-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .status-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .status-error {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .response-time {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .table th,
+        .table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table th {
+            background: var(--bg-secondary);
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .table td {
+            font-size: 14px;
+        }
+
+        .table code {
+            background: var(--bg-secondary);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .menu-toggle {
+                display: block;
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                z-index: 101;
+                background: var(--accent-color);
+                color: white;
+                border: none;
+                padding: 12px;
+                border-radius: 6px;
+                cursor: pointer;
+            }
+        }
+
+        .menu-toggle {
+            display: none;
+        }
+
+        .highlight {
+            background: var(--code-bg);
+            border-radius: 6px;
+        }
+
+        .info-box {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--accent-color);
+            padding: 16px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .info-box-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .param-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .param-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .param-list li:last-child {
+            border-bottom: none;
+        }
+
+        .param-name {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            color: var(--accent-color);
+        }
+
+        .param-type {
+            display: inline-block;
+            padding: 2px 6px;
+            background: var(--bg-tertiary);
+            border-radius: 3px;
+            font-size: 11px;
+            margin-left: 8px;
+        }
+
+        .param-required {
+            color: var(--error-color);
+            font-size: 11px;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+    <button class="menu-toggle" onclick="toggleSidebar()">☰ Menu</button>
+    
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">API Documentation</div>
+                <div class="theme-toggle">
+                    <span style="font-size: 12px; color: var(--text-secondary);">Dark Mode</span>
+                    <div class="toggle-switch" id="themeToggle" onclick="toggleTheme()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#home" class="nav-item active">Home</a>
+                <div class="nav-section">API Reference</div>
+                <a href="#authentication" class="nav-item">Authentication</a>
+                <a href="#expand-apis" class="nav-item">Expand APIs</a>
+                <a href="#translate-apis" class="nav-item">Translate APIs</a>
+                <a href="#bundle-upload" class="nav-item">Bundle Upload API</a>
+                <div class="nav-section">Resources</div>
+                <a href="#status-codes" class="nav-item">Status Codes</a>
+                <a href="#examples" class="nav-item">Code Examples</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Home Section -->
+            <section id="home" class="hero">
+                <h1>AYUSH Terminology Server</h1>
+                <p>FHIR-compatible terminology microservice for NAMASTE ↔ ICD-11 TM2</p>
+                
+                <div class="base-url">
+                    <strong>Base URL:</strong>&nbsp;https://ayush-terminology-server.onrender.com
+                </div>
+
+                <div class="quick-links">
+                    <a href="#authentication" class="btn btn-primary">Get Started</a>
+                    <a href="#expand-apis" class="btn btn-secondary">Browse APIs</a>
+                    <a href="#examples" class="btn btn-secondary">View Examples</a>
+                </div>
+            </section>
+
+            <!-- Authentication Section -->
+            <section id="authentication" class="section">
+                <h2 class="section-title">Authentication</h2>
+                
+                <div class="info-box">
+                    <div class="info-box-title">🔐 Authentication Required</div>
+                    <p>Most endpoints require a Bearer token obtained from the Mock ABHA Token endpoint. Include the token in the Authorization header for authenticated requests.</p>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method-badge method-post">POST</span>
+                        <span class="endpoint-path">/api/abha/mock-abha/token</span>
+                    </div>
+                    
+                    <p class="endpoint-description">
+                        Generate a mock authentication token using ABHA (Ayushman Bharat Health Account) credentials.
+                    </p>
+
+                    <div class="code-label">Request Body</div>
+                    <div class="code-block">
+                        <pre><code class="language-json">{
+  "abhaId": "12345678901234",
+  "name": "Ashwin",
+  "gender": "M",
+  "dob": "2001-10-10",
+  "mobile": "9123456789"
+}</code></pre>
+                    </div>
+
+                    <div class="code-label">Parameters</div>
+                    <ul class="param-list">
+                        <li>
+                            <span class="param-name">abhaId</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">required</span>
+                            <div style="color: var(--text-secondary); font-size: 13px; margin-top: 4px;">14-digit ABHA ID</div>
+                        </li>
+                        <li>
+                            <span class="param-name">name</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">required</span>
+                        </li>
+                        <li>
+                            <span class="param-name">gender</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">required</span>
+                            <div style="color: var(--text-secondary); font-size: 13px; margin-top: 4px;">M, F, or O</div>
+                        </li>
+                        <li>
+                            <span class="param-name">dob</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">required</span>
+                            <div style="color: var(--text-secondary); font-size: 13px; margin-top: 4px;">Format: YYYY-MM-DD</div>
+                        </li>
+                        <li>
+                            <span class="param-name">mobile</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">required</span>
+                            <div style="color: var(--text-secondary); font-size: 13px; margin-top: 4px;">10-digit mobile number</div>
+                        </li>
+                    </ul>
+
+                    <div class="code-label">Example Response (200 OK)</div>
+                    <div class="code-block">
+                        <pre><code class="language-json">{
+  "success": true,
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "tokenType": "Bearer",
+  "expiresIn": 3600,
+  "mock": true,
+  "payload": {
+    "abhaId": "12345678901234",
+    "name": "Ashwin",
+    "gender": "M",
+    "dob": "2001-10-10",
+    "mobile": "9123456789"
+  }
+}</code></pre>
+                    </div>
+
+                    <!-- Try It Out Panel -->
+                    <div class="try-it-out">
+                        <div class="try-it-out-header">🧪 Try It Out</div>
+                        
+                        <form onsubmit="testEndpoint(event, 'auth')" id="form-auth">
+                            <div class="form-group">
+                                <label class="form-label">Request Body (JSON)</label>
+                                <textarea class="form-textarea" id="auth-body">{
+  "abhaId": "12345678901234",
+  "name": "Ashwin",
+  "gender": "M",
+  "dob": "2001-10-10",
+  "mobile": "9123456789"
+}</textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn-test">Send Request</button>
+                        </form>
+
+                        <div class="response-panel" id="response-auth">
+                            <div class="response-header">
+                                <span class="status-badge" id="status-auth"></span>
+                                <span class="response-time" id="time-auth"></span>
+                            </div>
+                            <div class="code-label">Response</div>
+                            <div class="code-block">
+                                <pre><code class="language-json" id="response-body-auth"></code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Expand APIs Section -->
+            <section id="expand-apis" class="section">
+                <h2 class="section-title">Expand APIs</h2>
+                
+                <p style="margin-bottom: 24px; color: var(--text-secondary);">
+                    The Expand APIs provide autocomplete/search functionality for NAMASTE and ICD-11 TM2 codes.
+                </p>
+
+                <!-- Expand NAMASTE -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method-badge method-get">GET</span>
+                        <span class="endpoint-path">/api/expand/namaste</span>
+                    </div>
+                    
+                    <p class="endpoint-description">
+                        Search and autocomplete NAMASTE terminology codes based on a query string.
+                    </p>
+
+                    <div class="code-label">Headers</div>
+                    <div class="code-block">
+                        <pre><code class="language-http">Authorization: Bearer <token></code></pre>
+                    </div>
+
+                    <div class="code-label">Query Parameters</div>
+                    <ul class="param-list">
+                        <li>
+                            <span class="param-name">q</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">required</span>
+                            <div style="color: var(--text-secondary); font-size: 13px; margin-top: 4px;">Search query term</div>
+                        </li>
+                    </ul>
+
+                    <div class="code-label">Example Request</div>
+                    <div class="code-block">
+                        <pre><code class="language-http">GET /api/expand/namaste?q=vata
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</code></pre>
+                    </div>
+
+                    <div class="code-label">Example Response (200 OK)</div>
+                    <div class="code-block">
+                        <pre><code class="language-json">{
+  "results": [
+    {
+      "code": "SR11 (AAA-1)",
+      "display": "vAtasa~jcayaH",
+      "definition": "It is characterized by impaired movements...",
+      "score": 0.3642808794975281
+    }
+  ]
+}</code></pre>
+                    </div>
+
+                    <!-- Try It Out Panel -->
+                    <div class="try-it-out">
+                        <div class="try-it-out-header">🧪 Try It Out</div>
+                        
+                        <form onsubmit="testEndpoint(event, 'expand-namaste')" id="form-expand-namaste">
+                            <div class="form-group">
+                                <label class="form-label">Authorization Token</label>
+                                <input type="text" class="form-input" id="token-expand-namaste" placeholder="Bearer token from authentication">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Query (q)</label>
+                                <input type="text" class="form-input" id="query-expand-namaste" placeholder="e.g., vata" value="vata">
+                            </div>
+                            
+                            <button type="submit" class="btn-test">Send Request</button>
+                        </form>
+
+                        <div class="response-panel" id="response-expand-namaste">
+                            <div class="response-header">
+                                <span class="status-badge" id="status-expand-namaste"></span>
+                                <span class="response-time" id="time-expand-namaste"></span>
+                            </div>
+                            <div class="code-label">Response</div>
+                            <div class="code-block">
+                                <pre><code class="language-json" id="response-body-expand-namaste"></code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Expand ICD TM2 -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method-badge method-get">GET</span>
+                        <span class="endpoint-path">/api/expand/icdtm2</span>
+                    </div>
+                    
+                    <p class="endpoint-description">
+                        Search and autocomplete ICD-11 TM2 codes based on a query string.
+                    </p>
+
+                    <div class="code-label">Headers</div>
+                    <div class="code-block">
+                        <pre><code class="language-http">Authorization: Bearer <token></code></pre>
+                    </div>
+
+                    <div class="code-label">Query Parameters</div>
+                    <ul class="param-list">
+                        <li>
+                            <span class="param-name">q</span>
+                            <span class="param-type">string</span>
+                            <span class="param-required">required</span>
+                            <div style="color: var(--text-secondary); font-size: 13px; margin-top: 4px;">Search query term</div>
+                        </li>
+                    </ul>
+
+                    <div class="code-label">Example Request</div>
+                    <div class="code-block">
+                        <pre><code class="language-http">GET /api/expand/icdtm2?q=headache
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</code></pre>
+                    </div>
+
+                    <div class="code-label">Example Response (200 OK)</div>
+                    <div class="code-block">
+                        <pre><code class="language-json">{
+  "results": [
+    {
+      "code": "SK00",
+      "display": "Cephalalgia disorder (TM2)",
+      "definition": "Cephalalgia disorder (TM2)",
+      "score": 0.5170902609825134
+    }
+  ]
+}</code></pre>
+                    </div>
+
+                    <!-- Try It Out Panel -->
+                    <div class="try-it-out">
+                        <div class="try-it-out-header">🧪 Try It Out</div>
+                        
+                        <form onsubmit="testEndpoint(event, 'expand-icdtm2')" id="form-expand-icdtm2">
+                            <div class="form-group">
+                                <label class="form-label">Authorization Token</label>
+                                <input type="text" class="form-input" id="token-expand-icdtm2" placeholder="Bearer token from authentication">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Query (q)</label>
+                                <input type="text" class="form-input" id="query-expand-icdtm2" placeholder="e.g., headache" value="headache">
+                            </div>
+                            
+                            <button type="submit" class="btn-test">Send Request</button>
+                        </form>
+
+                        <div class="response-panel" id="response-expand-icdtm2">
+                            <div class="response-header">
+                                <span class="status-badge" id="status-expand-icdtm2"></span>
+                                <span class="response-time" id="time-expand-icdtm2"></span>
+                            </div>
+                            <div class="code-label">Response</div>
+                            <div class="code-block">
+                                <pre><code class="language-json" id="response-body-expand-icdtm2"></code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Translate APIs Section -->
+            <section id="translate-apis" class="section">
+                <h2 class="section-title">Translate APIs</h2>
+                
+                <p style="margin-bottom: 24px; color: var(--text-secondary);">
+                    Translate codes between NAMASTE and ICD-11 TM2 terminologies.
+                </p>
+
+                <!-- Translate to ICD TM2 -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method-badge method-post">POST</span>
+                        <span class="endpoint-path">/api/translate/to-icdtm2</span>
+                    </div>
+                    
+                    <p class="endpoint-description">
+                        Translate a NAMASTE code to its corresponding ICD-11 TM2 code(s).
+                    </p>
+
+                    <div class="code-label">Headers</div>
+                    <div class="code-block">
+                        <pre><code class="language-http">Authorization: Bearer <token>
+Content-Type: application/json</code></pre>
+                    </div>
+
+                    <div class="code-label">Request Body</div>
+                    <div class="code-block">
+                        <pre><code class="language-json">{
+  "code": "M-39"
+}</code></pre>
+                    </div>
+
+                    <div class="code-label">Example Response (200 OK)</div>
+                    <div class="code-block">
+                        <pre><code class="language-json">{
+  "from": "NAMASTE",
+  "inputCode": "M-39",
+  "count": 1,
+  "mappedTo": [
+    {
+      "code": "SM3G",
+      "display": "ICD-11 TM2 Code: SM3G\nTitle: Hernia disorder...",
+      "equivalence": "equivalent",
+      "confidence": 0.95
+    }
+  ]
+}</code></pre>
+                    </div>
+
+                    <!-- Try It Out Panel -->
+                    <div class="try-it-out">
+                        <div class="try-it-out-header">🧪 Try It Out</div>
+                        
+                        <form onsubmit="testEndpoint(event, 'translate-to-icdtm2')" id="form-translate-to-icdtm2">
+                            <div class="form-group">
+                                <label class="form-label">Authorization Token</label>
+                                <input type="text" class="form-input" id="token-translate-to-icdtm2" placeholder="Bearer token from authentication">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Request Body (JSON)</label>
+                                <textarea class="form-textarea" id="body-translate-to-icdtm2">{
+  "code": "M-39"
+}</textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn-test">Send Request</button>
+                        </form>
+
+                        <div class="response-panel" id="response-translate-to-icdtm2">
+                            <div class="response-header">
+                                <span class="status-badge" id="status-translate-to-icdtm2"></span>
+                                <span class="response-time" id="time-translate-to-icdtm2"></span>
+                            </div>
+                            <div class="code-label">Response</div>
+                            <div class="code-block">
+                                <pre><code class="language-json" id="response-body-translate-to-icdtm2"></code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Translate to NAMASTE -->
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method-badge method-post">POST</span>
+                        <span class="endpoint-path">/api/translate/to-namaste</span>
+                    </div>
+                    
+                    <p class="endpoint-description">
+                        Translate an ICD-11 TM2 code to its corresponding NAMASTE code(s).
+                    </p>
+
+                    <div class="code-label">Headers</div>
+                    <div class="code-block">
+                        <pre><code class="language-http">Authorization: Bearer <token>
+Content-Type: application/json</code></pre>
+                    </div>
+
+                    <div class="code-label">Request Body</div>
+                    <div class="code-block">
+                        <pre><code class="language-json">{
+  "code": "SM3G"
+}</code></pre>
+                    </div>
+
+                    <div class="code-label">Example Response (200 OK)</div>
+                    <div class="code-block">
+                        <pre><code class="language-json">{
+  "from": "ICD-TM2",
+  "inputCode": "SM3G",
+  "totalMatches": 16,
+  "mappedTo": [
+    {
+      "namasteCode": "M-39",
+      "namasteDisplay": "Fatq",
+      "equivalence": "equivalent",
+      "confidence": 0.95
+    }
+  ]
+}</code></pre>
+                    </div>
+
+                    <!-- Try It Out Panel -->
+                    <div class="try-it-out">
+                        <div class="try-it-out-header">🧪 Try It Out</div>
+                        
+                        <form onsubmit="testEndpoint(event, 'translate-to-namaste')" id="form-translate-to-namaste">
+                            <div class="form-group">
+                                <label class="form-label">Authorization Token</label>
+                                <input type="text" class="form-input" id="token-translate-to-namaste" placeholder="Bearer token from authentication">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Request Body (JSON)</label>
+                                <textarea class="form-textarea" id="body-translate-to-namaste">{
+  "code": "SM3G"
+}</textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn-test">Send Request</button>
+                        </form>
+
+                        <div class="response-panel" id="response-translate-to-namaste">
+                            <div class="response-header">
+                                <span class="status-badge" id="status-translate-to-namaste"></span>
+                                <span class="response-time" id="time-translate-to-namaste"></span>
+                            </div>
+                            <div class="code-label">Response</div>
+                            <div class="code-block">
+                                <pre><code class="language-json" id="response-body-translate-to-namaste"></code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bundle Upload Section -->
+            <section id="bundle-upload" class="section">
+                <h2 class="section-title">Bundle Upload API</h2>
+                
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method-badge method-post">POST</span>
+                        <span class="endpoint-path">/api/bundle/bundle_upload</span>
+                    </div>
+                    
+                    <p class="endpoint-description">
+                        Upload a FHIR bundle containing patient data and observations.
+                    </p>
+
+                    <div class="code-label">Headers</div>
+                    <div class="code-block">
+                        <pre><code class="language-http">Content-Type: application/json</code></pre>
+                    </div>
+
+                    <div class="code-label">Request Body (Example FHIR Bundle)</div>
+                    <div class="code-block">
+                        <pre><code class="language-json">{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:patient-1",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "patient-1",
+        "identifier": [
+          {
+            "system": "http://abha.in",
+            "value": "12345678901234"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "text": "Ashwin Kumar",
+            "family": "Kumar",
+            "given": ["Ashwin"]
+          }
+        ],
+        "gender": "male",
+        "birthDate": "2001-10-10",
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "9123456789",
+            "use": "mobile"
+          }
+        ]
+      },
+      "request": {
+        "method": "POST",
+        "url": "Patient"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:observation-1",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "observation-1",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://namaste.ayush.gov.in",
+              "code": "M-39",
+              "display": "Fatq"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:patient-1"
+        },
+        "effectiveDateTime": "2025-12-01T10:30:00Z"
+      },
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      }
+    }
+  ]
+}</code></pre>
+                    </div>
+
+                    <div class="code-label">Example Response (200 OK)</div>
+                    <div class="code-block">
+                        <pre><code class="language-json">{
+  "success": true,
+  "bundleId": "692db5eb0dc1abddf1facfcc",
+  "auditId": "692db5ec0dc1abddf1facfce"
+}</code></pre>
+                    </div>
+
+                    <!-- Try It Out Panel -->
+                    <div class="try-it-out">
+                        <div class="try-it-out-header">🧪 Try It Out</div>
+                        
+                        <form onsubmit="testEndpoint(event, 'bundle-upload')" id="form-bundle-upload">
+                            <div class="form-group">
+                                <label class="form-label">Request Body (JSON)</label>
+                                <textarea class="form-textarea" id="body-bundle-upload" style="min-height: 300px;">{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:patient-1",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "patient-1",
+        "identifier": [
+          {
+            "system": "http://abha.in",
+            "value": "12345678901234"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "text": "Ashwin Kumar",
+            "family": "Kumar",
+            "given": ["Ashwin"]
+          }
+        ],
+        "gender": "male",
+        "birthDate": "2001-10-10",
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "9123456789",
+            "use": "mobile"
+          }
+        ]
+      },
+      "request": {
+        "method": "POST",
+        "url": "Patient"
+      }
+    }
+  ]
+}</textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn-test">Send Request</button>
+                        </form>
+
+                        <div class="response-panel" id="response-bundle-upload">
+                            <div class="response-header">
+                                <span class="status-badge" id="status-bundle-upload"></span>
+                                <span class="response-time" id="time-bundle-upload"></span>
+                            </div>
+                            <div class="code-label">Response</div>
+                            <div class="code-block">
+                                <pre><code class="language-json" id="response-body-bundle-upload"></code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Status Codes Section -->
+            <section id="status-codes" class="section">
+                <h2 class="section-title">HTTP Status Codes</h2>
+                
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Status Code</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>200 OK</code></td>
+                            <td>Request successful, response includes requested data</td>
+                        </tr>
+                        <tr>
+                            <td><code>201 Created</code></td>
+                            <td>Resource successfully created</td>
+                        </tr>
+                        <tr>
+                            <td><code>400 Bad Request</code></td>
+                            <td>Invalid request format or missing required parameters</td>
+                        </tr>
+                        <tr>
+                            <td><code>401 Unauthorized</code></td>
+                            <td>Missing or invalid authentication token</td>
+                        </tr>
+                        <tr>
+                            <td><code>404 Not Found</code></td>
+                            <td>Requested resource or code not found</td>
+                        </tr>
+                        <tr>
+                            <td><code>500 Internal Server Error</code></td>
+                            <td>Server encountered an unexpected error</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- Code Examples Section -->
+            <section id="examples" class="section">
+                <h2 class="section-title">Code Examples</h2>
+                
+                <div class="info-box">
+                    <div class="info-box-title">💡 Typical Workflow</div>
+                    <p>1. Obtain authentication token using Mock ABHA Token endpoint<br>
+                    2. Use token to search for codes using Expand APIs<br>
+                    3. Translate codes between terminologies using Translate APIs<br>
+                    4. Upload complete patient bundles using Bundle Upload API</p>
+                </div>
+
+                <!-- Language Selector -->
+                <div class="language-selector">
+                    <label for="languageSelect">Select Programming Language:</label>
+                    <select id="languageSelect" class="language-dropdown" onchange="switchLanguage(this.value)">
+                        <option value="javascript">JavaScript / TypeScript (Node.js)</option>
+                        <option value="python">Python (requests + FastAPI)</option>
+                        <option value="java">Java (Spring Boot)</option>
+                        <option value="csharp">C# (.NET)</option>
+                        <option value="curl">cURL (CLI)</option>
+                    </select>
+                </div>
+
+                <!-- JavaScript Examples -->
+                <div id="example-javascript" class="code-example active">
+                    <h3 style="font-size: 20px; margin: 20px 0 16px; color: var(--text-primary);">JavaScript / TypeScript - Complete Workflow</h3>
+                    
+                    <div class="code-label">Using Fetch API (Browser/Node.js 18+)</div>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">const BASE_URL = 'https://ayush-terminology-server.onrender.com';
+
+// 1. Get authentication token
+async function getAuthToken() {
+  const response = await fetch(`${BASE_URL}/api/abha/mock-abha/token`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      abhaId: '12345678901234',
+      name: 'Ashwin',
+      gender: 'M',
+      dob: '2001-10-10',
+      mobile: '9123456789'
+    })
+  });
+  const data = await response.json();
+  return data.token;
+}
+
+// 2. Search NAMASTE codes
+async function searchNamasteCodes(token, query) {
+  const response = await fetch(
+    `${BASE_URL}/api/expand/namaste?q=${encodeURIComponent(query)}`,
+    { headers: { 'Authorization': `Bearer ${token}` } }
+  );
+  return await response.json();
+}
+
+// 3. Translate to ICD-11 TM2
+async function translateToIcd(token, code) {
+  const response = await fetch(`${BASE_URL}/api/translate/to-icdtm2`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ code })
+  });
+  return await response.json();
+}
+
+// 4. Upload FHIR bundle
+async function uploadBundle(bundle) {
+  const response = await fetch(`${BASE_URL}/api/bundle/bundle_upload`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(bundle)
+  });
+  return await response.json();
+}
+
+// Example Usage
+async function main() {
+  const token = await getAuthToken();
+  console.log('Token:', token);
+  
+  const results = await searchNamasteCodes(token, 'vata');
+  console.log('Search Results:', results);
+  
+  const translation = await translateToIcd(token, 'M-39');
+  console.log('Translation:', translation);
+}
+
+main();</code></pre>
+                    </div>
+
+                    <div class="code-label">Using Axios (Node.js/React)</div>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">const axios = require('axios'); // npm install axios
+
+const BASE_URL = 'https://ayush-terminology-server.onrender.com';
+
+class AyushClient {
+  constructor() {
+    this.token = null;
+    this.client = axios.create({ baseURL: BASE_URL });
+  }
+
+  async authenticate(credentials) {
+    const { data } = await this.client.post('/api/abha/mock-abha/token', credentials);
+    this.token = data.token;
+    return data;
+  }
+
+  async searchNamaste(query) {
+    const { data } = await this.client.get('/api/expand/namaste', {
+      params: { q: query },
+      headers: { Authorization: `Bearer ${this.token}` }
+    });
+    return data;
+  }
+
+  async translateToIcd(code) {
+    const { data } = await this.client.post('/api/translate/to-icdtm2',
+      { code },
+      { headers: { Authorization: `Bearer ${this.token}` } }
+    );
+    return data;
+  }
+
+  async uploadBundle(bundle) {
+    const { data } = await this.client.post('/api/bundle/bundle_upload', bundle);
+    return data;
+  }
+}
+
+// Usage
+const client = new AyushClient();
+await client.authenticate({
+  abhaId: '12345678901234',
+  name: 'Ashwin',
+  gender: 'M',
+  dob: '2001-10-10',
+  mobile: '9123456789'
+});
+const results = await client.searchNamaste('vata');</code></pre>
+                    </div>
+
+                    <div class="code-label">Express.js Server Example</div>
+                    <div class="code-block">
+                        <pre><code class="language-javascript">const express = require('express');
+const axios = require('axios');
+
+const app = express();
+app.use(express.json());
+
+const BASE_URL = 'https://ayush-terminology-server.onrender.com';
+
+// Middleware to get token
+async function getToken(req, res, next) {
+  try {
+    const { data } = await axios.post(`${BASE_URL}/api/abha/mock-abha/token`, {
+      abhaId: '12345678901234',
+      name: 'Ashwin',
+      gender: 'M',
+      dob: '2001-10-10',
+      mobile: '9123456789'
+    });
+    req.token = data.token;
+    next();
+  } catch (error) {
+    res.status(500).json({ error: 'Authentication failed' });
+  }
+}
+
+// Search endpoint
+app.get('/search/namaste', getToken, async (req, res) => {
+  try {
+    const { q } = req.query;
+    const { data } = await axios.get(
+      `${BASE_URL}/api/expand/namaste?q=${q}`,
+      { headers: { Authorization: `Bearer ${req.token}` } }
+    );
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.listen(3000, () => console.log('Server running on port 3000'));</code></pre>
+                    </div>
+                </div>
+
+                <!-- Python Examples -->
+                <div id="example-python" class="code-example">
+                    <h3 style="font-size: 20px; margin: 20px 0 16px; color: var(--text-primary);">Python - Complete Workflow</h3>
+                    
+                    <div class="code-label">Using requests library</div>
+                    <div class="code-block">
+                        <pre><code class="language-python">import requests
+import json
+
+BASE_URL = 'https://ayush-terminology-server.onrender.com'
+
+class AyushTerminologyClient:
+    def __init__(self):
+        self.base_url = BASE_URL
+        self.token = None
+        self.session = requests.Session()
+    
+    def authenticate(self, abha_id, name, gender, dob, mobile):
+        """Get authentication token"""
+        url = f"{self.base_url}/api/abha/mock-abha/token"
+        payload = {
+            "abhaId": abha_id,
+            "name": name,
+            "gender": gender,
+            "dob": dob,
+            "mobile": mobile
+        }
+        response = self.session.post(url, json=payload)
+        response.raise_for_status()
+        data = response.json()
+        self.token = data['token']
+        self.session.headers.update({'Authorization': f'Bearer {self.token}'})
+        return data
+    
+    def search_namaste(self, query):
+        """Search NAMASTE codes"""
+        url = f"{self.base_url}/api/expand/namaste"
+        response = self.session.get(url, params={'q': query})
+        response.raise_for_status()
+        return response.json()
+    
+    def search_icd(self, query):
+        """Search ICD-11 TM2 codes"""
+        url = f"{self.base_url}/api/expand/icdtm2"
+        response = self.session.get(url, params={'q': query})
+        response.raise_for_status()
+        return response.json()
+    
+    def translate_to_icd(self, code):
+        """Translate NAMASTE to ICD-11 TM2"""
+        url = f"{self.base_url}/api/translate/to-icdtm2"
+        response = self.session.post(url, json={'code': code})
+        response.raise_for_status()
+        return response.json()
+    
+    def translate_to_namaste(self, code):
+        """Translate ICD-11 TM2 to NAMASTE"""
+        url = f"{self.base_url}/api/translate/to-namaste"
+        response = self.session.post(url, json={'code': code})
+        response.raise_for_status()
+        return response.json()
+    
+    def upload_bundle(self, bundle):
+        """Upload FHIR bundle"""
+        url = f"{self.base_url}/api/bundle/bundle_upload"
+        # Remove auth header for bundle upload
+        headers = {k: v for k, v in self.session.headers.items() 
+                  if k != 'Authorization'}
+        response = requests.post(url, json=bundle, headers=headers)
+        response.raise_for_status()
+        return response.json()
+
+# Example Usage
+def main():
+    client = AyushTerminologyClient()
+    
+    # Authenticate
+    auth = client.authenticate(
+        "12345678901234", "Ashwin", "M", "2001-10-10", "9123456789"
+    )
+    print(f"Token: {auth['token'][:50]}...")
+    
+    # Search codes
+    results = client.search_namaste("vata")
+    print(f"\nSearch Results:\n{json.dumps(results, indent=2)}")
+    
+    # Translate
+    translation = client.translate_to_icd("M-39")
+    print(f"\nTranslation:\n{json.dumps(translation, indent=2)}")
+
+if __name__ == "__main__":
+    main()</code></pre>
+                    </div>
+
+                    <div class="code-label">FastAPI Server Example</div>
+                    <div class="code-block">
+                        <pre><code class="language-python">from fastapi import FastAPI, HTTPException, Depends
+from pydantic import BaseModel
+import requests
+import httpx
+
+app = FastAPI(title="AYUSH Terminology Proxy")
+
+BASE_URL = 'https://ayush-terminology-server.onrender.com'
+
+class AuthRequest(BaseModel):
+    abhaId: str
+    name: str
+    gender: str
+    dob: str
+    mobile: str
+
+class TranslateRequest(BaseModel):
+    code: str
+
+# Dependency to get auth token
+async def get_auth_token():
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            f"{BASE_URL}/api/abha/mock-abha/token",
+            json={
+                "abhaId": "12345678901234",
+                "name": "Ashwin",
+                "gender": "M",
+                "dob": "2001-10-10",
+                "mobile": "9123456789"
+            }
+        )
+        data = response.json()
+        return data['token']
+
+@app.post("/auth/token")
+async def authenticate(auth_req: AuthRequest):
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            f"{BASE_URL}/api/abha/mock-abha/token",
+            json=auth_req.dict()
+        )
+        return response.json()
+
+@app.get("/search/namaste")
+async def search_namaste(q: str, token: str = Depends(get_auth_token)):
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"{BASE_URL}/api/expand/namaste",
+            params={"q": q},
+            headers={"Authorization": f"Bearer {token}"}
+        )
+        return response.json()
+
+@app.post("/translate/to-icd")
+async def translate_to_icd(
+    req: TranslateRequest, 
+    token: str = Depends(get_auth_token)
+):
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            f"{BASE_URL}/api/translate/to-icdtm2",
+            json={"code": req.code},
+            headers={"Authorization": f"Bearer {token}"}
+        )
+        return response.json()
+
+# Run: uvicorn main:app --reload</code></pre>
+                    </div>
+                </div>
+
+                <!-- Java Examples -->
+                <div id="example-java" class="code-example">
+                    <h3 style="font-size: 20px; margin: 20px 0 16px; color: var(--text-primary);">Java (Spring Boot) - Complete Workflow</h3>
+                    
+                    <div class="code-label">Spring Boot RestTemplate Client</div>
+                    <div class="code-block">
+                        <pre><code class="language-java">package com.ayush.terminology.client;
+
+import org.springframework.http.*;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+@Service
+public class AyushTerminologyClient {
+    
+    private static final String BASE_URL = 
+        "https://ayush-terminology-server.onrender.com";
+    
+    private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
+    private String token;
+    
+    public AyushTerminologyClient() {
+        this.restTemplate = new RestTemplate();
+        this.objectMapper = new ObjectMapper();
+    }
+    
+    /**
+     * Authenticate and get token
+     */
+    public JsonNode authenticate(String abhaId, String name, 
+                                 String gender, String dob, String mobile) {
+        String url = BASE_URL + "/api/abha/mock-abha/token";
+        
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        
+        String requestBody = String.format(
+            "{\"abhaId\":\"%s\",\"name\":\"%s\",\"gender\":\"%s\"," +
+            "\"dob\":\"%s\",\"mobile\":\"%s\"}",
+            abhaId, name, gender, dob, mobile
+        );
+        
+        HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
+        ResponseEntity<JsonNode> response = restTemplate.postForEntity(
+            url, request, JsonNode.class
+        );
+        
+        JsonNode body = response.getBody();
+        this.token = body.get("token").asText();
+        return body;
+    }
+    
+    /**
+     * Search NAMASTE codes
+     */
+    public JsonNode searchNamasteCodes(String query) {
+        String url = UriComponentsBuilder
+            .fromHttpUrl(BASE_URL + "/api/expand/namaste")
+            .queryParam("q", query)
+            .toUriString();
+        
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+        
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+        ResponseEntity<JsonNode> response = restTemplate.exchange(
+            url, HttpMethod.GET, request, JsonNode.class
+        );
+        
+        return response.getBody();
+    }
+    
+    /**
+     * Search ICD-11 TM2 codes
+     */
+    public JsonNode searchIcdCodes(String query) {
+        String url = UriComponentsBuilder
+            .fromHttpUrl(BASE_URL + "/api/expand/icdtm2")
+            .queryParam("q", query)
+            .toUriString();
+        
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+        
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+        ResponseEntity<JsonNode> response = restTemplate.exchange(
+            url, HttpMethod.GET, request, JsonNode.class
+        );
+        
+        return response.getBody();
+    }
+    
+    /**
+     * Translate NAMASTE to ICD-11 TM2
+     */
+    public JsonNode translateToIcd(String code) {
+        String url = BASE_URL + "/api/translate/to-icdtm2";
+        
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(token);
+        
+        String requestBody = String.format("{\"code\":\"%s\"}", code);
+        HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
+        
+        ResponseEntity<JsonNode> response = restTemplate.postForEntity(
+            url, request, JsonNode.class
+        );
+        
+        return response.getBody();
+    }
+    
+    /**
+     * Translate ICD-11 TM2 to NAMASTE
+     */
+    public JsonNode translateToNamaste(String code) {
+        String url = BASE_URL + "/api/translate/to-namaste";
+        
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(token);
+        
+        String requestBody = String.format("{\"code\":\"%s\"}", code);
+        HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
+        
+        ResponseEntity<JsonNode> response = restTemplate.postForEntity(
+            url, request, JsonNode.class
+        );
+        
+        return response.getBody();
+    }
+    
+    /**
+     * Upload FHIR bundle
+     */
+    public JsonNode uploadBundle(JsonNode bundle) {
+        String url = BASE_URL + "/api/bundle/bundle_upload";
+        
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        
+        HttpEntity<JsonNode> request = new HttpEntity<>(bundle, headers);
+        ResponseEntity<JsonNode> response = restTemplate.postForEntity(
+            url, request, JsonNode.class
+        );
+        
+        return response.getBody();
+    }
+}
+
+// Example Controller Usage
+@RestController
+@RequestMapping("/api/ayush")
+public class AyushController {
+    
+    @Autowired
+    private AyushTerminologyClient client;
+    
+    @GetMapping("/search/namaste")
+    public ResponseEntity<JsonNode> searchNamaste(@RequestParam String q) {
+        // Ensure authenticated first
+        client.authenticate(
+            "12345678901234", "Ashwin", "M", "2001-10-10", "9123456789"
+        );
+        JsonNode result = client.searchNamasteCodes(q);
+        return ResponseEntity.ok(result);
+    }
+}</code></pre>
+                    </div>
+
+                    <div class="code-label">Maven Dependencies (pom.xml)</div>
+                    <div class="code-block">
+                        <pre><code class="language-xml"><dependencies>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+    </dependency>
+</dependencies></code></pre>
+                    </div>
+                </div>
+
+                <!-- C# Examples -->
+                <div id="example-csharp" class="code-example">
+                    <h3 style="font-size: 20px; margin: 20px 0 16px; color: var(--text-primary);">C# (.NET) - Complete Workflow</h3>
+                    
+                    <div class="code-label">.NET 6+ HttpClient Example</div>
+                    <div class="code-block">
+                        <pre><code class="language-csharp">using System;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+
+namespace AyushTerminology
+{
+    public class AyushTerminologyClient : IDisposable
+    {
+        private const string BaseUrl = 
+            "https://ayush-terminology-server.onrender.com";
+        
+        private readonly HttpClient _httpClient;
+        private string _token;
+        
+        public AyushTerminologyClient()
+        {
+            _httpClient = new HttpClient
+            {
+                BaseAddress = new Uri(BaseUrl)
+            };
+        }
+        
+        // Authentication
+        public async Task<JsonDocument> AuthenticateAsync(
+            string abhaId, string name, string gender, 
+            string dob, string mobile)
+        {
+            var payload = new
+            {
+                abhaId,
+                name,
+                gender,
+                dob,
+                mobile
+            };
+            
+            var response = await _httpClient.PostAsJsonAsync(
+                "/api/abha/mock-abha/token", payload
+            );
+            response.EnsureSuccessStatusCode();
+            
+            var result = await response.Content.ReadFromJsonAsync<JsonDocument>();
+            _token = result.RootElement.GetProperty("token").GetString();
+            
+            // Set default auth header
+            _httpClient.DefaultRequestHeaders.Authorization = 
+                new System.Net.Http.Headers.AuthenticationHeaderValue(
+                    "Bearer", _token
+                );
+            
+            return result;
+        }
+        
+        // Search NAMASTE codes
+        public async Task<JsonDocument> SearchNamasteCodesAsync(string query)
+        {
+            var response = await _httpClient.GetAsync(
+                $"/api/expand/namaste?q={Uri.EscapeDataString(query)}"
+            );
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<JsonDocument>();
+        }
+        
+        // Search ICD-11 TM2 codes
+        public async Task<JsonDocument> SearchIcdCodesAsync(string query)
+        {
+            var response = await _httpClient.GetAsync(
+                $"/api/expand/icdtm2?q={Uri.EscapeDataString(query)}"
+            );
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<JsonDocument>();
+        }
+        
+        // Translate to ICD-11 TM2
+        public async Task<JsonDocument> TranslateToIcdAsync(string code)
+        {
+            var payload = new { code };
+            var response = await _httpClient.PostAsJsonAsync(
+                "/api/translate/to-icdtm2", payload
+            );
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<JsonDocument>();
+        }
+        
+        // Translate to NAMASTE
+        public async Task<JsonDocument> TranslateToNamasteAsync(string code)
+        {
+            var payload = new { code };
+            var response = await _httpClient.PostAsJsonAsync(
+                "/api/translate/to-namaste", payload
+            );
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<JsonDocument>();
+        }
+        
+        // Upload FHIR bundle
+        public async Task<JsonDocument> UploadBundleAsync(JsonDocument bundle)
+        {
+            // Remove auth header for bundle upload
+            _httpClient.DefaultRequestHeaders.Authorization = null;
+            
+            var content = new StringContent(
+                bundle.RootElement.GetRawText(),
+                Encoding.UTF8,
+                "application/json"
+            );
+            
+            var response = await _httpClient.PostAsync(
+                "/api/bundle/bundle_upload", content
+            );
+            response.EnsureSuccessStatusCode();
+            
+            // Restore auth header
+            _httpClient.DefaultRequestHeaders.Authorization = 
+                new System.Net.Http.Headers.AuthenticationHeaderValue(
+                    "Bearer", _token
+                );
+            
+            return await response.Content.ReadFromJsonAsync<JsonDocument>();
+        }
+        
+        public void Dispose()
+        {
+            _httpClient?.Dispose();
+        }
+    }
+    
+    // Example Usage
+    class Program
+    {
+        static async Task Main(string[] args)
+        {
+            using var client = new AyushTerminologyClient();
+            
+            // Authenticate
+            var auth = await client.AuthenticateAsync(
+                "12345678901234", "Ashwin", "M", "2001-10-10", "9123456789"
+            );
+            Console.WriteLine($"Token obtained: {auth.RootElement.GetProperty("token")}");
+            
+            // Search codes
+            var results = await client.SearchNamasteCodesAsync("vata");
+            Console.WriteLine($"Results: {results.RootElement}");
+            
+            // Translate
+            var translation = await client.TranslateToIcdAsync("M-39");
+            Console.WriteLine($"Translation: {translation.RootElement}");
+        }
+    }
+}</code></pre>
+                    </div>
+
+                    <div class="code-label">ASP.NET Core Web API Controller</div>
+                    <div class="code-block">
+                        <pre><code class="language-csharp">using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
+
+namespace AyushApi.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class TerminologyController : ControllerBase
+    {
+        private readonly AyushTerminologyClient _client;
+        
+        public TerminologyController(AyushTerminologyClient client)
+        {
+            _client = client;
+        }
+        
+        [HttpPost("authenticate")]
+        public async Task<IActionResult> Authenticate(
+            [FromBody] AuthRequest request)
+        {
+            var result = await _client.AuthenticateAsync(
+                request.AbhaId, request.Name, request.Gender,
+                request.Dob, request.Mobile
+            );
+            return Ok(result);
+        }
+        
+        [HttpGet("search/namaste")]
+        public async Task<IActionResult> SearchNamaste([FromQuery] string q)
+        {
+            var result = await _client.SearchNamasteCodesAsync(q);
+            return Ok(result);
+        }
+        
+        [HttpPost("translate/to-icd")]
+        public async Task<IActionResult> TranslateToIcd(
+            [FromBody] TranslateRequest request)
+        {
+            var result = await _client.TranslateToIcdAsync(request.Code);
+            return Ok(result);
+        }
+    }
+    
+    public record AuthRequest(
+        string AbhaId, string Name, string Gender, string Dob, string Mobile
+    );
+    
+    public record TranslateRequest(string Code);
+}</code></pre>
+                    </div>
+                </div>
+
+                <!-- cURL Examples -->
+                <div id="example-curl" class="code-example">
+                    <h3 style="font-size: 20px; margin: 20px 0 16px; color: var(--text-primary);">cURL - CLI Commands</h3>
+                    
+                    <div class="code-label">Complete Workflow with cURL</div>
+                    <div class="code-block">
+                        <pre><code class="language-bash">#!/bin/bash
+
+# Step 1: Get authentication token
+echo "Step 1: Getting authentication token..."
+AUTH_RESPONSE=$(curl -s -X POST \
+  https://ayush-terminology-server.onrender.com/api/abha/mock-abha/token \
+  -H "Content-Type: application/json" \
+  -d '{
+    "abhaId": "12345678901234",
+    "name": "Ashwin",
+    "gender": "M",
+    "dob": "2001-10-10",
+    "mobile": "9123456789"
+  }')
+
+echo "$AUTH_RESPONSE" | jq '.'
+
+# Extract token (requires jq)
+TOKEN=$(echo "$AUTH_RESPONSE" | jq -r '.token')
+echo "Token: $TOKEN"
+echo ""
+
+# Step 2: Search NAMASTE codes
+echo "Step 2: Searching NAMASTE codes..."
+curl -s -X GET \
+  "https://ayush-terminology-server.onrender.com/api/expand/namaste?q=vata" \
+  -H "Authorization: Bearer $TOKEN" | jq '.'
+echo ""
+
+# Step 3: Search ICD-11 TM2 codes
+echo "Step 3: Searching ICD-11 TM2 codes..."
+curl -s -X GET \
+  "https://ayush-terminology-server.onrender.com/api/expand/icdtm2?q=headache" \
+  -H "Authorization: Bearer $TOKEN" | jq '.'
+echo ""
+
+# Step 4: Translate NAMASTE to ICD-11 TM2
+echo "Step 4: Translating NAMASTE to ICD-11 TM2..."
+curl -s -X POST \
+  https://ayush-terminology-server.onrender.com/api/translate/to-icdtm2 \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"code": "M-39"}' | jq '.'
+echo ""
+
+# Step 5: Translate ICD-11 TM2 to NAMASTE
+echo "Step 5: Translating ICD-11 TM2 to NAMASTE..."
+curl -s -X POST \
+  https://ayush-terminology-server.onrender.com/api/translate/to-namaste \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"code": "SM3G"}' | jq '.'
+echo ""
+
+# Step 6: Upload FHIR bundle
+echo "Step 6: Uploading FHIR bundle..."
+curl -s -X POST \
+  https://ayush-terminology-server.onrender.com/api/bundle/bundle_upload \
+  -H "Content-Type: application/json" \
+  -d '{
+    "resourceType": "Bundle",
+    "type": "transaction",
+    "entry": [
+      {
+        "fullUrl": "urn:uuid:patient-1",
+        "resource": {
+          "resourceType": "Patient",
+          "id": "patient-1",
+          "identifier": [
+            {
+              "system": "http://abha.in",
+              "value": "12345678901234"
+            }
+          ],
+          "name": [
+            {
+              "use": "official",
+              "text": "Ashwin Kumar",
+              "family": "Kumar",
+              "given": ["Ashwin"]
+            }
+          ],
+          "gender": "male",
+          "birthDate": "2001-10-10"
+        },
+        "request": {
+          "method": "POST",
+          "url": "Patient"
+        }
+      }
+    ]
+  }' | jq '.'
+
+echo "Workflow complete!"</code></pre>
+                    </div>
+
+                    <div class="code-label">Individual cURL Commands</div>
+                    <div class="code-block">
+                        <pre><code class="language-bash"># Authentication
+curl -X POST https://ayush-terminology-server.onrender.com/api/abha/mock-abha/token \
+  -H "Content-Type: application/json" \
+  -d '{
+    "abhaId": "12345678901234",
+    "name": "Ashwin",
+    "gender": "M",
+    "dob": "2001-10-10",
+    "mobile": "9123456789"
+  }'
+
+# Search NAMASTE (replace YOUR_TOKEN with actual token)
+curl -X GET "https://ayush-terminology-server.onrender.com/api/expand/namaste?q=vata" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+
+# Search ICD-11 TM2
+curl -X GET "https://ayush-terminology-server.onrender.com/api/expand/icdtm2?q=headache" \
+  -H "Authorization: Bearer YOUR_TOKEN"
+
+# Translate to ICD-11 TM2
+curl -X POST https://ayush-terminology-server.onrender.com/api/translate/to-icdtm2 \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"code": "M-39"}'
+
+# Translate to NAMASTE
+curl -X POST https://ayush-terminology-server.onrender.com/api/translate/to-namaste \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"code": "SM3G"}'
+
+# Upload Bundle
+curl -X POST https://ayush-terminology-server.onrender.com/api/bundle/bundle_upload \
+  -H "Content-Type: application/json" \
+  -d @bundle.json
+
+# With verbose output (-v flag)
+curl -v -X POST https://ayush-terminology-server.onrender.com/api/abha/mock-abha/token \
+  -H "Content-Type: application/json" \
+  -d '{"abhaId": "12345678901234", "name": "Ashwin", "gender": "M", "dob": "2001-10-10", "mobile": "9123456789"}'
+
+# Save response to file
+curl -X GET "https://ayush-terminology-server.onrender.com/api/expand/namaste?q=vata" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -o response.json
+
+# Pretty print with jq (if installed)
+curl -s -X GET "https://ayush-terminology-server.onrender.com/api/expand/namaste?q=vata" \
+  -H "Authorization: Bearer YOUR_TOKEN" | jq '.'</code></pre>
+                    </div>
+
+                    <div class="code-label">Postman Collection Export (JSON)</div>
+                    <div class="code-block">
+                        <pre><code class="language-json">{
+  "info": {
+    "name": "AYUSH Terminology Server",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://ayush-terminology-server.onrender.com"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "url": "{{baseUrl}}/api/abha/mock-abha/token",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"abhaId\": \"12345678901234\",\n  \"name\": \"Ashwin\",\n  \"gender\": \"M\",\n  \"dob\": \"2001-10-10\",\n  \"mobile\": \"9123456789\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Search NAMASTE",
+      "request": {
+        "method": "GET",
+        "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+        "url": {
+          "raw": "{{baseUrl}}/api/expand/namaste?q=vata",
+          "query": [{"key": "q", "value": "vata"}]
+        }
+      }
+    }
+  ]
+}</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <footer style="margin-top: 80px; padding-top: 40px; border-top: 1px solid var(--border-color); text-align: center; color: var(--text-secondary);">
+                <p>AYUSH Terminology Server API Documentation</p>
+                <p style="font-size: 14px; margin-top: 8px;">FHIR-compatible terminology microservice for NAMASTE ↔ ICD-11 TM2</p>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        const BASE_URL = 'https://ayush-terminology-server.onrender.com';
+
+        // Language switcher
+        function switchLanguage(language) {
+            document.querySelectorAll('.code-example').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.getElementById(`example-${language}`).classList.add('active');
+            localStorage.setItem('preferredLanguage', language);
+        }
+
+        // Load saved language preference
+        const savedLanguage = localStorage.getItem('preferredLanguage');
+        if (savedLanguage) {
+            document.getElementById('languageSelect').value = savedLanguage;
+            switchLanguage(savedLanguage);
+        }
+
+        // Theme toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const toggle = document.getElementById('themeToggle');
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.setAttribute('data-theme', newTheme);
+            toggle.classList.toggle('active');
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        if (savedTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.getElementById('themeToggle').classList.add('active');
+        }
+
+        // Sidebar toggle for mobile
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                    
+                    // Update active nav item
+                    document.querySelectorAll('.nav-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // Close sidebar on mobile
+                    if (window.innerWidth <= 768) {
+                        document.getElementById('sidebar').classList.remove('open');
+                    }
+                }
+            });
+        });
+
+        // Highlight code blocks
+        document.addEventListener('DOMContentLoaded', function() {
+            hljs.highlightAll();
+        });
+
+        // API Testing Functions
+        async function testEndpoint(event, endpointId) {
+            event.preventDefault();
+            
+            const responsePanel = document.getElementById(`response-${endpointId}`);
+            const statusBadge = document.getElementById(`status-${endpointId}`);
+            const timeBadge = document.getElementById(`time-${endpointId}`);
+            const responseBody = document.getElementById(`response-body-${endpointId}`);
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            
+            // Disable button
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+            
+            const startTime = Date.now();
+            
+            try {
+                let url, options;
+                
+                switch(endpointId) {
+                    case 'auth':
+                        url = `${BASE_URL}/api/abha/mock-abha/token`;
+                        const authBody = document.getElementById('auth-body').value;
+                        options = {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: authBody
+                        };
+                        break;
+                        
+                    case 'expand-namaste':
+                        const tokenNamaste = document.getElementById('token-expand-namaste').value;
+                        const queryNamaste = document.getElementById('query-expand-namaste').value;
+                        url = `${BASE_URL}/api/expand/namaste?q=${encodeURIComponent(queryNamaste)}`;
+                        options = {
+                            method: 'GET',
+                            headers: {
+                                'Authorization': `Bearer ${tokenNamaste}`
+                            }
+                        };
+                        break;
+                        
+                    case 'expand-icdtm2':
+                        const tokenIcd = document.getElementById('token-expand-icdtm2').value;
+                        const queryIcd = document.getElementById('query-expand-icdtm2').value;
+                        url = `${BASE_URL}/api/expand/icdtm2?q=${encodeURIComponent(queryIcd)}`;
+                        options = {
+                            method: 'GET',
+                            headers: {
+                                'Authorization': `Bearer ${tokenIcd}`
+                            }
+                        };
+                        break;
+                        
+                    case 'translate-to-icdtm2':
+                        const tokenToIcd = document.getElementById('token-translate-to-icdtm2').value;
+                        const bodyToIcd = document.getElementById('body-translate-to-icdtm2').value;
+                        url = `${BASE_URL}/api/translate/to-icdtm2`;
+                        options = {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${tokenToIcd}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: bodyToIcd
+                        };
+                        break;
+                        
+                    case 'translate-to-namaste':
+                        const tokenToNamaste = document.getElementById('token-translate-to-namaste').value;
+                        const bodyToNamaste = document.getElementById('body-translate-to-namaste').value;
+                        url = `${BASE_URL}/api/translate/to-namaste`;
+                        options = {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${tokenToNamaste}`,
+                                'Content-Type': 'application/json'
+                            },
+                            body: bodyToNamaste
+                        };
+                        break;
+                        
+                    case 'bundle-upload':
+                        const bundleBody = document.getElementById('body-bundle-upload').value;
+                        url = `${BASE_URL}/api/bundle/bundle_upload`;
+                        options = {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: bundleBody
+                        };
+                        break;
+                }
+                
+                const response = await fetch(url, options);
+                const endTime = Date.now();
+                const responseTime = endTime - startTime;
+                
+                const data = await response.json();
+                
+                // Update UI
+                responsePanel.classList.add('show');
+                
+                if (response.ok) {
+                    statusBadge.textContent = `${response.status} ${response.statusText}`;
+                    statusBadge.className = 'status-badge status-success';
+                    
+                    // Store token if this is auth endpoint
+                    if (endpointId === 'auth' && data.token) {
+                        // Auto-fill token in other forms
+                        document.querySelectorAll('input[id^="token-"]').forEach(input => {
+                            if (!input.value) {
+                                input.value = data.token;
+                            }
+                        });
+                    }
+                } else {
+                    statusBadge.textContent = `${response.status} ${response.statusText}`;
+                    statusBadge.className = 'status-badge status-error';
+                }
+                
+                timeBadge.textContent = `Response time: ${responseTime}ms`;
+                responseBody.textContent = JSON.stringify(data, null, 2);
+                
+                // Re-highlight
+                hljs.highlightElement(responseBody);
+                
+            } catch (error) {
+                responsePanel.classList.add('show');
+                statusBadge.textContent = 'Error';
+                statusBadge.className = 'status-badge status-error';
+                timeBadge.textContent = '';
+                responseBody.textContent = JSON.stringify({
+                    error: error.message,
+                    note: 'This could be a CORS error or network issue. The API may need to be configured to allow requests from this origin.'
+                }, null, 2);
+                
+                hljs.highlightElement(responseBody);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Send Request';
+            }
+        }
+
+        // Intersection Observer for active nav highlighting
+        const sections = document.querySelectorAll('.section, .hero');
+        const navItems = document.querySelectorAll('.nav-item');
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '-20% 0px -70% 0px',
+            threshold: 0
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    navItems.forEach(item => {
+                        item.classList.remove('active');
+                        if (item.getAttribute('href') === `#${id}`) {
+                            item.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
